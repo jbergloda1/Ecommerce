@@ -62,6 +62,9 @@ class ProductController extends Controller
                     $data = array('size'=>$rowSize, 'amount'=>$amount);
                     new ProductSizeResource($this->productRepository->storeSize($data, $product_id));
                 }
+                $amountTotal = ($this->productRepository->showAmount($product_id));
+                new ProductResource($this->productRepository->storeAmount($product_id, $amountTotal));
+
             }
             //Product Color
             if(isset($requestColor->color)){
@@ -83,8 +86,14 @@ class ProductController extends Controller
     {
         $getdata = new ProductResource($this->productRepository->show($id));
         $img = $getdata->img;
-        unlink("uploads/".$img);        
-        return new BaseResource($this->productRepository->destroy($id));    
+        unlink("uploads/".$img); 
+        $imgDetail = $this->productRepository->showImage($id);
+        for($x = 0; $x < count($imgDetail); $x++) {
+            $data = array($imgDetail[$x]);
+            $anh = $data[0]['image'];
+            unlink("uploads/Detail/".$anh);
+        }      
+        return new BaseResource($this->productRepository->destroy($id));
     }
 
     public function update(ProductRequest $request, $id)

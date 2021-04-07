@@ -32,7 +32,7 @@ class ProductRepository
     {
         return Product::create([
             'name'          => $inputs['name'],
-            //'amount'        => $inputs['amount'],
+            // 'amount'        => $amountTotal,
             'img'           => $newNamefile,
             'note'          => $inputs['note'],
             'import_price'  => $inputs['import_price'],
@@ -60,6 +60,15 @@ class ProductRepository
             'amount'     => $data['amount'],
             'status'     => 1
         ]);
+    }
+    public function showImage($id){
+        return ProductImage::where('product_id','=',$id)->get();
+    }
+    public function showAmount($product_id){
+        return ProductSize::where('product_id', $product_id)->sum('amount');
+    }
+    public function storeAmount($product_id, $amountTotal){
+        return Product::where('id', $product_id)->update(['amount'=> $amountTotal]);
     }
 
     public function storeColor($rowColor, $product_id)
